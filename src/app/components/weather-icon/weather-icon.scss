@@ -1,0 +1,154 @@
+.weather-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  user-select: none;
+
+  &.size-sm {
+    width: 28px;
+    height: 28px;
+  }
+
+  &.size-md {
+    width: 48px;
+    height: 48px;
+  }
+
+  &.size-lg {
+    width: 80px;
+    height: 80px;
+  }
+
+  &.size-xl {
+    width: 130px;
+    height: 130px;
+  }
+
+  .svg-icon {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
+    overflow: visible;
+  }
+
+  .img-fallback {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.25));
+  }
+}
+
+// Micro-animations for SVGs
+.svg-sun {
+  .sun-rays {
+    transform-origin: 50px 50px;
+    animation: rotateRays 16s linear infinite;
+  }
+  circle {
+    animation: sunPulse 4s ease-in-out infinite alternate;
+  }
+}
+
+.svg-moon {
+  path {
+    animation: moonFloat 5s ease-in-out infinite alternate;
+  }
+  .star-1 { animation: starTwinkle 2.2s infinite ease-in-out; }
+  .star-2 { animation: starTwinkle 2.8s infinite ease-in-out 0.8s; }
+  .star-3 { animation: starTwinkle 3.2s infinite ease-in-out 1.5s; }
+}
+
+.svg-cloud-sun {
+  .sun-behind {
+    animation: sunPulse 4s ease-in-out infinite alternate;
+  }
+  path {
+    animation: cloudDrift 6s ease-in-out infinite alternate;
+  }
+}
+
+.svg-clouds {
+  path:first-child {
+    animation: cloudDrift 7s ease-in-out infinite alternate-reverse;
+  }
+  path:last-child {
+    animation: cloudDrift 5s ease-in-out infinite alternate;
+  }
+}
+
+.svg-rain {
+  .drop-1 { animation: rainFall 1.2s infinite linear; }
+  .drop-2 { animation: rainFall 1.2s infinite linear 0.4s; }
+  .drop-3 { animation: rainFall 1.2s infinite linear 0.8s; }
+}
+
+.svg-thunder {
+  .lightning {
+    animation: lightningFlash 3.5s infinite;
+    transform-origin: 50px 70px;
+  }
+}
+
+.svg-snow {
+  .snow-1 { animation: snowFall 2.2s infinite linear; }
+  .snow-2 { animation: snowFall 2.6s infinite linear 0.7s; }
+  .snow-3 { animation: snowFall 2.4s infinite linear 1.3s; }
+}
+
+.svg-mist {
+  rect {
+    animation: mistFlow 4s ease-in-out infinite alternate;
+  }
+  .mist-line-2 { animation-delay: 0.6s; }
+  .mist-line-3 { animation-delay: 1.2s; }
+  .mist-line-4 { animation-delay: 1.8s; }
+}
+
+@keyframes rotateRays {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes sunPulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.05); }
+}
+
+@keyframes moonFloat {
+  0% { transform: translateY(0px) rotate(0deg); }
+  100% { transform: translateY(-3px) rotate(3deg); }
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.4); }
+}
+
+@keyframes cloudDrift {
+  0% { transform: translateX(-2px); }
+  100% { transform: translateX(3px); }
+}
+
+@keyframes rainFall {
+  0% { opacity: 0; transform: translateY(-8px); }
+  50% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(8px); }
+}
+
+@keyframes snowFall {
+  0% { opacity: 0; transform: translateY(-6px) translateX(-2px); }
+  50% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(6px) translateX(2px); }
+}
+
+@keyframes lightningFlash {
+  0%, 88%, 94%, 100% { opacity: 0.1; }
+  90%, 93% { opacity: 1; }
+}
+
+@keyframes mistFlow {
+  0% { transform: translateX(-4px); opacity: 0.6; }
+  100% { transform: translateX(4px); opacity: 1; }
+}

@@ -1,0 +1,190 @@
+<div class="weather-icon-wrapper" [ngClass]="['size-' + size(), 'type-' + iconCategory]">
+  @switch (iconCategory) {
+    @case ('sun') {
+      <svg viewBox="0 0 100 100" class="svg-icon svg-sun">
+        <defs>
+          <linearGradient id="sunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFF066" />
+            <stop offset="50%" stop-color="#FFA800" />
+            <stop offset="100%" stop-color="#FF5E00" />
+          </linearGradient>
+          <filter id="sunGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+        <!-- Sun Rays -->
+        <g class="sun-rays" stroke="#FFA800" stroke-width="4" stroke-linecap="round" opacity="0.85">
+          <line x1="50" y1="12" x2="50" y2="4" />
+          <line x1="50" y1="88" x2="50" y2="96" />
+          <line x1="12" y1="50" x2="4" y2="50" />
+          <line x1="88" y1="50" x2="96" y2="50" />
+          <line x1="23" y1="23" x2="17" y2="17" />
+          <line x1="77" y1="77" x2="83" y2="83" />
+          <line x1="23" y1="77" x2="17" y2="83" />
+          <line x1="77" y1="23" x2="83" y2="17" />
+        </g>
+        <!-- Sun Center -->
+        <circle cx="50" cy="50" r="24" fill="url(#sunGrad)" filter="url(#sunGlow)" />
+      </svg>
+    }
+
+    @case ('moon') {
+      <svg viewBox="0 0 100 100" class="svg-icon svg-moon">
+        <defs>
+          <linearGradient id="moonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFFFFF" />
+            <stop offset="50%" stop-color="#E2E8F0" />
+            <stop offset="100%" stop-color="#94A3B8" />
+          </linearGradient>
+          <filter id="moonGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+        <path d="M60 20 C42 22 28 36 28 54 C28 72 42 86 60 88 C48 84 40 72 40 54 C40 36 48 24 60 20 Z" 
+              fill="url(#moonGrad)" filter="url(#moonGlow)"/>
+        <circle cx="72" cy="30" r="2" fill="#F8FAFC" class="star star-1" />
+        <circle cx="78" cy="48" r="1.5" fill="#F8FAFC" class="star star-2" />
+        <circle cx="22" cy="32" r="1.5" fill="#F8FAFC" class="star star-3" />
+      </svg>
+    }
+
+    @case ('few-clouds-day') {
+      <svg viewBox="0 0 100 100" class="svg-icon svg-cloud-sun">
+        <defs>
+          <linearGradient id="sunHalfGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFF066" />
+            <stop offset="100%" stop-color="#FF7A00" />
+          </linearGradient>
+          <linearGradient id="cloudGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#FFFFFF" />
+            <stop offset="100%" stop-color="#CBD5E1" />
+          </linearGradient>
+        </defs>
+        <circle cx="62" cy="36" r="18" fill="url(#sunHalfGrad)" class="sun-behind" />
+        <path d="M28 72 C22 72 18 67 18 61 C18 56 22 51 27 50 C29 41 37 34 47 34 C58 34 67 42 68 53 C73 53 78 57 78 63 C78 68 73 72 68 72 Z"
+              fill="url(#cloudGrad1)" />
+      </svg>
+    }
+
+    @case ('few-clouds-night') {
+      <svg viewBox="0 0 100 100" class="svg-icon svg-cloud-moon">
+        <defs>
+          <linearGradient id="moonSmallGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#F8FAFC" />
+            <stop offset="100%" stop-color="#94A3B8" />
+          </linearGradient>
+          <linearGradient id="cloudNightGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#E2E8F0" />
+            <stop offset="100%" stop-color="#64748B" />
+          </linearGradient>
+        </defs>
+        <path d="M68 28 C56 29 48 38 48 50 C48 53 49 56 50 58 C47 57 43 57 40 58 C38 46 44 34 56 29 C60 27 64 27 68 28 Z" fill="url(#moonSmallGrad)" />
+        <path d="M28 74 C22 74 18 69 18 63 C18 58 22 53 27 52 C29 43 37 36 47 36 C58 36 67 44 68 55 C73 55 78 59 78 65 C78 70 73 74 68 74 Z"
+              fill="url(#cloudNightGrad)" />
+      </svg>
+    }
+
+    @case ('scattered-clouds') {
+      <svg viewBox="0 0 100 100" class="svg-icon svg-clouds">
+        <defs>
+          <linearGradient id="cloudBackGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#CBD5E1" />
+            <stop offset="100%" stop-color="#64748B" />
+          </linearGradient>
+          <linearGradient id="cloudFrontGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#FFFFFF" />
+            <stop offset="100%" stop-color="#94A3B8" />
+          </linearGradient>
+        </defs>
+        <path d="M42 56 C38 56 34 52 34 48 C34 44 37 40 41 39 C43 32 50 26 58 26 C67 26 74 32 75 40 C79 40 83 44 83 48 C83 52 79 56 75 56 Z"
+              fill="url(#cloudBackGrad)" opacity="0.8" />
+        <path d="M24 74 C18 74 14 69 14 63 C14 58 18 53 23 52 C25 43 33 36 43 36 C54 36 63 44 64 55 C69 55 74 59 74 65 C74 70 69 74 64 74 Z"
+              fill="url(#cloudFrontGrad)" />
+      </svg>
+    }
+
+    @case ('rain') {
+      <svg viewBox="0 0 100 100" class="svg-icon svg-rain">
+        <defs>
+          <linearGradient id="rainCloudGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#E2E8F0" />
+            <stop offset="100%" stop-color="#475569" />
+          </linearGradient>
+          <linearGradient id="dropGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#38BDF8" />
+            <stop offset="100%" stop-color="#0284C7" />
+          </linearGradient>
+        </defs>
+        <path d="M26 60 C20 60 16 55 16 49 C16 44 20 39 25 38 C27 29 35 22 45 22 C56 22 65 30 66 41 C71 41 76 45 76 51 C76 56 71 60 66 60 Z"
+              fill="url(#rainCloudGrad)" />
+        <g class="raindrops">
+          <line x1="32" y1="68" x2="26" y2="82" stroke="url(#dropGrad)" stroke-width="3" stroke-linecap="round" class="drop drop-1" />
+          <line x1="48" y1="68" x2="42" y2="82" stroke="url(#dropGrad)" stroke-width="3" stroke-linecap="round" class="drop drop-2" />
+          <line x1="64" y1="68" x2="58" y2="82" stroke="url(#dropGrad)" stroke-width="3" stroke-linecap="round" class="drop drop-3" />
+        </g>
+      </svg>
+    }
+
+    @case ('thunderstorm') {
+      <svg viewBox="0 0 100 100" class="svg-icon svg-thunder">
+        <defs>
+          <linearGradient id="thunderCloudGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#94A3B8" />
+            <stop offset="100%" stop-color="#1E293B" />
+          </linearGradient>
+          <linearGradient id="lightningGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#FDE047" />
+            <stop offset="100%" stop-color="#EAB308" />
+          </linearGradient>
+          <filter id="lightningGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+        <path d="M26 58 C20 58 16 53 16 47 C16 42 20 37 25 36 C27 27 35 20 45 20 C56 20 65 28 66 39 C71 39 76 43 76 49 C76 54 71 58 66 58 Z"
+              fill="url(#thunderCloudGrad)" />
+        <polygon points="50,56 40,70 48,70 44,86 58,68 50,68" fill="url(#lightningGrad)" filter="url(#lightningGlow)" class="lightning" />
+      </svg>
+    }
+
+    @case ('snow') {
+      <svg viewBox="0 0 100 100" class="svg-icon svg-snow">
+        <defs>
+          <linearGradient id="snowCloudGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#FFFFFF" />
+            <stop offset="100%" stop-color="#94A3B8" />
+          </linearGradient>
+        </defs>
+        <path d="M26 58 C20 58 16 53 16 47 C16 42 20 37 25 36 C27 27 35 20 45 20 C56 20 65 28 66 39 C71 39 76 43 76 49 C76 54 71 58 66 58 Z"
+              fill="url(#snowCloudGrad)" />
+        <g fill="#E0F2FE" class="snowflakes">
+          <circle cx="34" cy="72" r="2.5" class="snow-1" />
+          <circle cx="50" cy="78" r="3" class="snow-2" />
+          <circle cx="64" cy="71" r="2.5" class="snow-3" />
+        </g>
+      </svg>
+    }
+
+    @case ('mist') {
+      <svg viewBox="0 0 100 100" class="svg-icon svg-mist">
+        <defs>
+          <linearGradient id="mistGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="rgba(255,255,255,0.2)" />
+            <stop offset="50%" stop-color="rgba(255,255,255,0.9)" />
+            <stop offset="100%" stop-color="rgba(255,255,255,0.2)" />
+          </linearGradient>
+        </defs>
+        <rect x="18" y="36" width="64" height="5" rx="2.5" fill="url(#mistGrad)" class="mist-line-1" />
+        <rect x="24" y="48" width="52" height="5" rx="2.5" fill="url(#mistGrad)" class="mist-line-2" />
+        <rect x="14" y="60" width="72" height="5" rx="2.5" fill="url(#mistGrad)" class="mist-line-3" />
+        <rect x="30" y="72" width="40" height="5" rx="2.5" fill="url(#mistGrad)" class="mist-line-4" />
+      </svg>
+    }
+
+    @default {
+      <img [src]="fallbackUrl" [alt]="condition()" class="img-fallback" />
+    }
+  }
+</div>
