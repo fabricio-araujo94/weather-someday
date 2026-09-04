@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HourlyChart } from './hourly-chart';
+import { HourlyChartComponent } from './hourly-chart';
 
-describe('HourlyChart', () => {
-  let component: HourlyChart;
-  let fixture: ComponentFixture<HourlyChart>;
+describe('HourlyChartComponent', () => {
+  let component: HourlyChartComponent;
+  let fixture: ComponentFixture<HourlyChartComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HourlyChart],
+      imports: [HourlyChartComponent]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HourlyChart);
+    fixture = TestBed.createComponent(HourlyChartComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {

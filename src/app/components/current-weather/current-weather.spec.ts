@@ -1,21 +1,26 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CurrentWeather } from './current-weather';
+import { CurrentWeatherComponent } from './current-weather';
 
-describe('CurrentWeather', () => {
-  let component: CurrentWeather;
-  let fixture: ComponentFixture<CurrentWeather>;
+describe('CurrentWeatherComponent', () => {
+  let component: CurrentWeatherComponent;
+  let fixture: ComponentFixture<CurrentWeatherComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CurrentWeather],
+      imports: [CurrentWeatherComponent]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CurrentWeather);
+    fixture = TestBed.createComponent(CurrentWeatherComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should round Celsius temperature properly', () => {
+    expect(component.roundTemp(25.4)).toBe(25);
+    expect(component.roundTemp(25.6)).toBe(26);
   });
 });
