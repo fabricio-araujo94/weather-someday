@@ -113,17 +113,30 @@ export class WeatherService {
       errorMessage = `Erro: ${error.error.message}`;
     } else {
       // Erro retornado pelo BFF / Servidor
-      if (error.error && typeof error.error === 'object' && error.error.error) {
-        errorMessage = error.error.error;
-      } else if (error.error && typeof error.error === 'object' && error.error.message) {
-        errorMessage = error.error.message;
-      } else {
+      const errBody = error.error;
+      if (errBody) {
+        if (typeof errBody === 'string') {
+          errorMessage = errBody;
+        } else if (typeof errBody === 'object') {
+          if (typeof errBody.message === 'string') {
+            errorMessage = errBody.message;
+          } else if (typeof errBody.error === 'string') {
+            errorMessage = errBody.error;
+          } else if (typeof errBody.message === 'object') {
+            errorMessage = JSON.stringify(errBody.message);
+          } else if (typeof errBody.error === 'object') {
+            errorMessage = JSON.stringify(errBody.error);
+          }
+        }
+      }
+
+      if (errorMessage === 'Ocorreu um erro desconhecido.') {
         switch (error.status) {
           case 400:
             errorMessage = 'Parâmetros de busca inválidos.';
             break;
           case 401:
-            errorMessage = 'Erro de autenticação com a API de clima.';
+            errorMessage = 'Erro de autenticação com a API de clima (Chave ausente ou inválida).';
             break;
           case 404:
             errorMessage = 'Cidade ou localização não encontrada.';
