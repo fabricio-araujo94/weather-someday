@@ -1,0 +1,25 @@
+.main-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  min-height: 100vh;
+}
+
+.error-banner {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  backdrop-filter: blur(10px);
+  color: #fecaca;
+
+  .tip {
+    display: block;
+    font-size: 0.85rem;
+    opacity: 0.9;
+    margin-top: 0.5rem;
+  }
+}
