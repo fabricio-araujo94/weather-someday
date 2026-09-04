@@ -1,17 +1,52 @@
-<app-header 
-  (search)="onSearchCity($event)" 
+<!-- Dynamic ambient glow orbs -->
+<div class="ambient-glow-wrapper" aria-hidden="true">
+  <div class="ambient-orb ambient-orb-1"></div>
+  <div class="ambient-orb ambient-orb-2"></div>
+</div>
+
+<!-- Sticky Header -->
+<app-header
+  (search)="onSearchCity($event)"
   (geoClick)="onGeoClick()">
 </app-header>
 
+<!-- Main Container -->
 <main class="main-container">
-  @if (errorMessage) {
-    <div class="error-banner">
-      <p>⚠️ {{ errorMessage }}</p>
-      <span class="tip">Nota: Lembre-se de configurar sua API Key da OpenWeatherMap em `src/environments/environment.ts` se receber erro de chave inválida.</span>
+  <!-- Friendly Error Banner with Retry Action -->
+  @if (errorMessage()) {
+    <div class="error-banner glass-panel" role="alert">
+      <div class="error-icon">⚠️</div>
+      <div class="error-content">
+        <h4>Ops! Algo não saiu como esperado</h4>
+        <p class="error-msg">{{ errorMessage() }}</p>
+        <span class="error-tip">Dica: Verifique o nome da cidade ou sua chave em <code>src/environments/environment.ts</code>.</span>
+      </div>
+      <button type="button" class="btn-retry" (click)="retry()">Tentar Novamente</button>
     </div>
   }
 
-  <app-current-weather [weatherData]="weatherData"></app-current-weather>
+  <!-- Current Weather Hero & Bento Highlights -->
+  <app-current-weather
+    [weatherData]="weatherData()">
+  </app-current-weather>
 
-  <app-hourly-chart [forecastData]="forecastData"></app-hourly-chart>
+  <!-- 2-Column Section: 5-Day Forecast + Hourly Chart -->
+  <div class="forecast-layout-grid">
+    <div class="grid-col-chart">
+      <app-hourly-chart
+        [forecastData]="forecastData()">
+      </app-hourly-chart>
+    </div>
+
+    <div class="grid-col-days">
+      <app-forecast-days
+        [forecastData]="forecastData()">
+      </app-forecast-days>
+    </div>
+  </div>
 </main>
+
+<!-- Footer -->
+<footer class="app-footer">
+  <p>Fabricio © 2026 • Dados meteorológicos fornecidos por OpenWeatherMap</p>
+</footer>
