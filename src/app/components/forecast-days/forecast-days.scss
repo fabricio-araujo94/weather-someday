@@ -1,0 +1,235 @@
+.forecast-card {
+  padding: 1.75rem 2rem;
+  border-radius: 28px;
+  background: var(--card-bg, rgba(255, 255, 255, 0.08));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.15));
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.35);
+  color: white;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.45);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    .title-with-icon {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+
+      .header-emoji {
+        font-size: 1.25rem;
+      }
+
+      h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        background: linear-gradient(135deg, #ffffff 30%, #cbd5e1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+    }
+
+    .badge-sub {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+  }
+
+  .days-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .day-row {
+    display: grid;
+    grid-template-columns: 100px 1.2fr 1.6fr;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid transparent;
+    transition: all 0.25s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateX(4px);
+    }
+
+    .day-identity {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+
+      .day-name {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #f1f5f9;
+
+        &.is-today {
+          color: #38bdf8;
+          font-weight: 800;
+        }
+      }
+
+      .day-date {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.55);
+      }
+    }
+
+    .day-weather-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-width: 0;
+
+      .weather-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+        min-width: 0;
+
+        .day-desc {
+          font-size: 0.85rem;
+          color: rgba(255, 255, 255, 0.9);
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .pop-pill {
+          display: inline-flex;
+          align-items: center;
+          font-size: 0.7rem;
+          font-weight: 600;
+          color: #38bdf8;
+          background: rgba(56, 189, 248, 0.15);
+          padding: 0.15rem 0.45rem;
+          border-radius: 10px;
+          width: fit-content;
+        }
+      }
+    }
+
+    .temp-bar-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      .temp-min, .temp-max {
+        font-size: 0.95rem;
+        font-weight: 600;
+        width: 32px;
+        text-align: center;
+      }
+
+      .temp-min {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .temp-max {
+        color: #ffffff;
+      }
+
+      .range-track {
+        flex: 1;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        position: relative;
+        overflow: hidden;
+
+        .range-fill {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          border-radius: 999px;
+          background: linear-gradient(90deg, #38bdf8 0%, #facc15 50%, #f97316 100%);
+          box-shadow: 0 0 8px rgba(250, 204, 21, 0.4);
+          transition: left 0.4s ease, width 0.4s ease;
+        }
+      }
+    }
+  }
+
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+
+    .skeleton-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.6rem 0;
+
+      .skeleton-shimmer {
+        background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.05) 100%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: 8px;
+      }
+
+      .skeleton-name {
+        width: 70px;
+        height: 20px;
+      }
+
+      .skeleton-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+      }
+
+      .skeleton-bar {
+        flex: 1;
+        height: 16px;
+      }
+    }
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@media (max-width: 640px) {
+  .forecast-card {
+    padding: 1.25rem 1rem;
+
+    .day-row {
+      grid-template-columns: 75px 1fr 120px;
+      gap: 0.5rem;
+      padding: 0.5rem;
+
+      .temp-bar-container {
+        gap: 0.35rem;
+
+        .temp-min, .temp-max {
+          width: 24px;
+          font-size: 0.85rem;
+        }
+      }
+    }
+  }
+}

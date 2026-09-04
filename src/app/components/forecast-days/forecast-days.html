@@ -1,0 +1,54 @@
+<section class="forecast-card glass-panel" aria-label="Previsão para os próximos 5 dias">
+  <div class="card-header">
+    <div class="title-with-icon">
+      <span class="header-emoji">📅</span>
+      <h3>Previsão para 5 Dias</h3>
+    </div>
+    <span class="badge-sub">Mínimas e Máximas</span>
+  </div>
+
+  @if (dailyForecasts().length > 0) {
+    <div class="days-list">
+      @for (day of dailyForecasts(); track day.formattedDate) {
+        <div class="day-row">
+          <div class="day-identity">
+            <span class="day-name" [class.is-today]="day.dayLabel === 'Hoje'">{{ day.dayLabel }}</span>
+            <span class="day-date">{{ day.formattedDate }}</span>
+          </div>
+
+          <div class="day-weather-info">
+            <app-weather-icon [icon]="day.icon" [condition]="day.condition" size="sm"></app-weather-icon>
+            <div class="weather-meta">
+              <span class="day-desc">{{ day.condition }}</span>
+              @if (day.pop > 10) {
+                <span class="pop-pill" title="Probabilidade de chuva">
+                  💧 {{ day.pop }}%
+                </span>
+              }
+            </div>
+          </div>
+
+          <div class="temp-bar-container">
+            <span class="temp-min">{{ roundTemp(day.minTemp) }}°</span>
+            <div class="range-track">
+              <div 
+                class="range-fill" 
+                [style.left.%]="day.barOffsetPercent" 
+                [style.width.%]="day.barWidthPercent">
+              </div>
+            </div>
+            <span class="temp-max">{{ roundTemp(day.maxTemp) }}°</span>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="loading-state">
+      <div class="skeleton-row" *ngFor="let i of [1,2,3,4,5]">
+        <div class="skeleton-shimmer skeleton-name"></div>
+        <div class="skeleton-shimmer skeleton-icon"></div>
+        <div class="skeleton-shimmer skeleton-bar"></div>
+      </div>
+    </div>
+  }
+</section>
