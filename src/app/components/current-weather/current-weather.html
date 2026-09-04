@@ -1,41 +1,169 @@
 @if (weatherData(); as data) {
-  <div class="current-weather-card">
-    <div class="location-info">
-      <h2>{{ data.name }}, {{ data.sys.country }}</h2>
-      <p class="description">{{ data.weather[0].description }}</p>
+  <div class="current-weather-wrapper">
+    <!-- Hero Weather Card -->
+    <div class="hero-weather-card glass-panel">
+      <!-- Top location & status -->
+      <div class="location-header">
+        <div class="location-title">
+          <span class="loc-pin">📍</span>
+          <h2>{{ data.name }}</h2>
+          <span class="country-badge">{{ data.sys.country }}</span>
+        </div>
+        <div class="condition-chip">
+          <span class="live-indicator"></span>
+          <span>Tempo Real</span>
+        </div>
+      </div>
+
+      <!-- Main center display -->
+      <div class="weather-hero-body">
+        <div class="temp-block">
+          <div class="main-temperature">
+            <span class="temp-digit">{{ roundTemp(data.main.temp) }}</span>
+            <span class="temp-unit">°C</span>
+          </div>
+
+          <div class="weather-description">
+            {{ data.weather[0].description }}
+          </div>
+
+          <div class="temp-range-pills">
+            <span class="pill-range min" title="Temperatura Mínima">
+              <span class="arrow">↓</span> {{ roundTemp(data.main.temp_min) }}°
+            </span>
+            <span class="pill-range max" title="Temperatura Máxima">
+              <span class="arrow">↑</span> {{ roundTemp(data.main.temp_max) }}°
+            </span>
+            <span class="pill-feels" title="Sensação Térmica">
+              Sensação {{ roundTemp(data.main.feels_like) }}°
+            </span>
+          </div>
+        </div>
+
+        <div class="icon-hero-block">
+          <app-weather-icon
+            [icon]="data.weather[0].icon"
+            [condition]="data.weather[0].description"
+            size="xl">
+          </app-weather-icon>
+        </div>
+      </div>
+
+      <!-- Sun daylight arc widget -->
+      <div class="sun-tracker-bar">
+        <div class="sun-times-row">
+          <div class="sun-time-item">
+            <span class="sun-icon">🌅</span>
+            <div class="sun-meta">
+              <span class="sun-lbl">Nascer do Sol</span>
+              <span class="sun-val">{{ sunTimes().sunrise }}</span>
+            </div>
+          </div>
+
+          <div class="sun-time-item right">
+            <div class="sun-meta">
+              <span class="sun-lbl">Pôr do Sol</span>
+              <span class="sun-val">{{ sunTimes().sunset }}</span>
+            </div>
+            <span class="sun-icon">🌇</span>
+          </div>
+        </div>
+
+        <div class="sun-arc-track">
+          <div class="sun-arc-fill" [style.width.%]="sunTimes().progressPercent"></div>
+          <div class="sun-orb" [style.left.%]="sunTimes().progressPercent">
+            <span>{{ sunTimes().isDay ? '☀️' : '🌙' }}</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="main-weather">
-      <div class="temp-section">
-        <span class="temp">{{ Math.round(data.main.temp) }}°C</span>
-        <span class="feels-like">Sensação térmica: {{ Math.round(data.main.feels_like) }}°C</span>
+    <!-- Bento Grid of Weather Highlights -->
+    <div class="bento-highlights-grid">
+      <!-- Humidity Card -->
+      <div class="bento-card glass-panel">
+        <div class="bento-header">
+          <span class="bento-icon">💧</span>
+          <span class="bento-label">Umidade</span>
+        </div>
+        <div class="bento-main-val">
+          <span class="bento-num">{{ data.main.humidity }}</span>
+          <span class="bento-unit">%</span>
+        </div>
+        <div class="bento-progress-track">
+          <div class="bento-progress-bar humidity" [style.width.%]="data.main.humidity"></div>
+        </div>
+        <span class="bento-subtext">{{ humidityStatus() }}</span>
       </div>
-      <div class="icon-section">
-        <img [src]="getWeatherIconUrl(data.weather[0].icon)" [alt]="data.weather[0].description">
-      </div>
-    </div>
 
-    <div class="details-grid">
-      <div class="detail-item">
-        <span class="label">Mín / Máx</span>
-        <span class="value">{{ Math.round(data.main.temp_min) }}° / {{ Math.round(data.main.temp_max) }}°</span>
+      <!-- Wind Card -->
+      <div class="bento-card glass-panel">
+        <div class="bento-header">
+          <span class="bento-icon">💨</span>
+          <span class="bento-label">Vento</span>
+        </div>
+        <div class="bento-main-val">
+          <span class="bento-num">{{ windSpeedKmH() }}</span>
+          <span class="bento-unit">km/h</span>
+        </div>
+        <div class="wind-info-row">
+          <span class="compass-pill">Direção {{ windDirection() }} ({{ data.wind.deg || 0 }}°)</span>
+        </div>
+        <span class="bento-subtext">Velocidade: {{ data.wind.speed }} m/s</span>
       </div>
-      <div class="detail-item">
-        <span class="label">Umidade</span>
-        <span class="value">{{ data.main.humidity }}%</span>
+
+      <!-- Pressure Card -->
+      <div class="bento-card glass-panel">
+        <div class="bento-header">
+          <span class="bento-icon">🧭</span>
+          <span class="bento-label">Pressão Atmosférica</span>
+        </div>
+        <div class="bento-main-val">
+          <span class="bento-num">{{ data.main.pressure }}</span>
+          <span class="bento-unit">hPa</span>
+        </div>
+        <div class="pressure-badge">
+          <span>{{ pressureStatus() }}</span>
+        </div>
+        <span class="bento-subtext">Nível do mar: {{ data.main.sea_level || data.main.pressure }} hPa</span>
       </div>
-      <div class="detail-item">
-        <span class="label">Vento</span>
-        <span class="value">{{ data.wind.speed }} m/s</span>
-      </div>
-      <div class="detail-item">
-        <span class="label">Pressão</span>
-        <span class="value">{{ data.main.pressure }} hPa</span>
+
+      <!-- Thermal Sensation Card -->
+      <div class="bento-card glass-panel">
+        <div class="bento-header">
+          <span class="bento-icon">🌡️</span>
+          <span class="bento-label">Sensação Térmica</span>
+        </div>
+        <div class="bento-main-val">
+          <span class="bento-num">{{ roundTemp(data.main.feels_like) }}</span>
+          <span class="bento-unit">°C</span>
+        </div>
+        <span class="bento-subtext">
+          @if (data.main.feels_like > data.main.temp) {
+            Sensação mais quente que a temperatura real.
+          } @else if (data.main.feels_like < data.main.temp) {
+            Sensação mais fria devido ao vento.
+          } @else {
+            Similar à temperatura medida.
+          }
+        </span>
       </div>
     </div>
   </div>
 } @else {
-  <div class="loading-card">
-    <p>Carregando dados meteorológicos...</p>
+  <!-- Skeleton Loading View -->
+  <div class="hero-skeleton glass-panel">
+    <div class="skeleton-header">
+      <div class="skeleton-shimmer skeleton-title"></div>
+      <div class="skeleton-shimmer skeleton-pill"></div>
+    </div>
+    <div class="skeleton-body">
+      <div class="skeleton-left">
+        <div class="skeleton-shimmer skeleton-temp"></div>
+        <div class="skeleton-shimmer skeleton-desc"></div>
+        <div class="skeleton-shimmer skeleton-pills"></div>
+      </div>
+      <div class="skeleton-shimmer skeleton-icon-circle"></div>
+    </div>
   </div>
 }
