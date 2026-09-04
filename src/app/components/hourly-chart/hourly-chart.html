@@ -1,14 +1,23 @@
-<div class="chart-container">
-  <h3>Previsão para as Próximas Horas</h3>
-  <div class="canvas-wrapper">
-    @if (forecastData()) {
+<div class="hourly-forecast-card glass-panel" aria-label="Previsão para as próximas 24 horas">
+  <div class="card-header">
+    <div class="title-wrap">
+      <span class="header-icon">📈</span>
+      <h3>Previsão para as Próximas Horas</h3>
+    </div>
+    <span class="badge-sub">Temperatura (°C)</span>
+  </div>
+
+  @if (forecastData()) {
+    <div class="canvas-wrapper">
       <canvas baseChart
         [data]="chartData"
         [options]="chartOptions"
         [type]="'line'">
       </canvas>
-    } @else {
-      <p class="no-data">Carregando gráfico...</p>
-    }
-  </div>
+    </div>
+  } @else {
+    <div class="hourly-skeleton">
+      <div class="skeleton-shimmer skeleton-chart-box"></div>
+    </div>
+  }
 </div>
