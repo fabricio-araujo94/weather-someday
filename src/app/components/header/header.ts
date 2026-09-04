@@ -1,8 +1,6 @@
-import { Component, OnInit, OnDestroy, output } from '@angular/core';
+import { Component, OnInit, OnDestroy, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { interval, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -12,35 +10,39 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./header.scss']
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  currentDate = new Date();
-  private timeSubscription?: Subscription;
+  currentDate = signal(new Date());
+  private timerId?: ReturnType<typeof setInterval>;
   
   searchCity = '';
+
   search = output<string>();
   geoClick = output<void>();
 
   ngOnInit(): void {
-    this.timeSubscription = interval(1000).pipe(
-      map(() => new Date())
-    ).subscribe(time => {
-      this.currentDate = time;
-    });
+    this.timerId = setInterval(() => {
+      this.currentDate.set(new Date());
+    }, 1000);
   }
 
   ngOnDestroy(): void {
-    if (this.timeSubscription) {
-      this.timeSubscription.unsubscribe();
+    if (this.timerId) {
+      clearInterval(this.timerId);
     }
   }
 
   onSearch(): void {
-    if (this.searchCity.trim()) {
-      this.search.emit(this.searchCity.trim());
+    const trimmed = this.searchCity.trim();
+    if (trimmed) {
+      this.search.emit(trimmed);
       this.searchCity = '';
     }
   }
 
   onGeoClick(): void {
     this.geoClick.emit();
+  }
+
+  clearSearch(): void {
+    this.searchCity = '';
   }
 }

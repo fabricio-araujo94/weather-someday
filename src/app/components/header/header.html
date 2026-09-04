@@ -1,27 +1,64 @@
-<header class="header">
-  <div class="logo-container">
-    <h1>Weather Someday</h1>
-    <span class="subtitle">Seu guia meteorológico</span>
-  </div>
+<header class="app-header">
+  <div class="header-main-bar">
+    <!-- Brand / Logo -->
+    <div class="logo-container" role="banner">
+      <div class="logo-icon-wrap">
+        <svg viewBox="0 0 40 40" class="logo-svg">
+          <defs>
+            <linearGradient id="logoSun" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FDE047" />
+              <stop offset="100%" stop-color="#F97316" />
+            </linearGradient>
+            <linearGradient id="logoCloud" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#FFFFFF" />
+              <stop offset="100%" stop-color="#94A3B8" />
+            </linearGradient>
+          </defs>
+          <circle cx="26" cy="15" r="9" fill="url(#logoSun)" />
+          <path d="M12 30 C8 30 5 27 5 23 C5 19 8 16 12 15 C13 10 18 6 24 6 C29 6 34 10 35 15 C38 16 40 19 40 22 C40 26 37 30 32 30 Z"
+                fill="url(#logoCloud)" opacity="0.95" />
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1 class="brand-title">Weather Someday</h1>
+        <span class="brand-subtitle">Previsão do Tempo</span>
+      </div>
+    </div>
 
-  <div class="search-container">
-    <input 
-      type="text" 
-      [(ngModel)]="searchCity" 
-      (keyup.enter)="onSearch()" 
-      placeholder="Pesquisar cidade..." 
-      class="search-input"
-    />
-    <button (click)="onSearch()" class="btn-search" title="Pesquisar">
-      🔍
-    </button>
-    <button (click)="onGeoClick()" class="btn-geo" title="Usar minha localização">
-      📍
-    </button>
-  </div>
+    <!-- Search Controls -->
+    <div class="search-section">
+      <div class="search-bar">
+        <span class="search-prefix-icon">🔍</span>
+        <input
+          type="text"
+          [(ngModel)]="searchCity"
+          (keyup.enter)="onSearch()"
+          placeholder="Buscar cidade..."
+          class="search-input"
+          aria-label="Buscar cidade por nome"
+        />
+        @if (searchCity) {
+          <button type="button" class="btn-clear" (click)="clearSearch()" title="Limpar">✕</button>
+        }
+        <button type="button" (click)="onSearch()" class="btn-action-search" title="Pesquisar">
+          Buscar
+        </button>
+      </div>
 
-  <div class="clock-container">
-    <div class="time">{{ currentDate | date:'HH:mm:ss' }}</div>
-    <div class="date">{{ currentDate | date:'fullDate':'':'pt-BR' }}</div>
+      <button type="button" (click)="onGeoClick()" class="btn-geo" title="Usar minha localização atual">
+        <span class="geo-icon">📍</span>
+        <span class="geo-label">Meu Local</span>
+      </button>
+    </div>
+
+    <!-- Live Clock & Date Badge -->
+    <div class="clock-badge">
+      <div class="clock-time">
+        <span>{{ currentDate() | date:'HH:mm:ss' }}</span>
+      </div>
+      <div class="clock-date">
+        <span>{{ currentDate() | date:'fullDate':'':'pt-BR' }}</span>
+      </div>
+    </div>
   </div>
 </header>
