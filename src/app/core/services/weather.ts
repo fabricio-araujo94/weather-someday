@@ -1,8 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError, from } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
+import { catchError } from 'rxjs/operators';
 import { WeatherData } from '../interfaces/weather';
 import { ForecastData } from '../interfaces/forecast';
 
@@ -11,8 +10,7 @@ import { ForecastData } from '../interfaces/forecast';
 })
 export class WeatherService {
   private http = inject(HttpClient);
-  private apiKey = environment.weatherApiKey;
-  private apiUrl = environment.apiUrl;
+  private apiUrl = '/api/weather';
 
   /**
    * Obtém a localização atual do usuário via Geolocation API do navegador
@@ -58,11 +56,9 @@ export class WeatherService {
     const params = new HttpParams()
       .set('lat', lat.toString())
       .set('lon', lon.toString())
-      .set('appid', this.apiKey)
-      .set('units', 'metric')
-      .set('lang', 'pt_br');
+      .set('type', 'weather');
 
-    return this.http.get<WeatherData>(`${this.apiUrl}/weather`, { params }).pipe(
+    return this.http.get<WeatherData>(this.apiUrl, { params }).pipe(
       catchError(this.handleError)
     );
   }
@@ -74,11 +70,9 @@ export class WeatherService {
     const params = new HttpParams()
       .set('lat', lat.toString())
       .set('lon', lon.toString())
-      .set('appid', this.apiKey)
-      .set('units', 'metric')
-      .set('lang', 'pt_br');
+      .set('type', 'forecast');
 
-    return this.http.get<ForecastData>(`${this.apiUrl}/forecast`, { params }).pipe(
+    return this.http.get<ForecastData>(this.apiUrl, { params }).pipe(
       catchError(this.handleError)
     );
   }
@@ -88,12 +82,10 @@ export class WeatherService {
    */
   getCurrentWeatherByCity(city: string): Observable<WeatherData> {
     const params = new HttpParams()
-      .set('q', city)
-      .set('appid', this.apiKey)
-      .set('units', 'metric')
-      .set('lang', 'pt_br');
+      .set('city', city)
+      .set('type', 'weather');
 
-    return this.http.get<WeatherData>(`${this.apiUrl}/weather`, { params }).pipe(
+    return this.http.get<WeatherData>(this.apiUrl, { params }).pipe(
       catchError(this.handleError)
     );
   }
@@ -103,12 +95,10 @@ export class WeatherService {
    */
   getForecastByCity(city: string): Observable<ForecastData> {
     const params = new HttpParams()
-      .set('q', city)
-      .set('appid', this.apiKey)
-      .set('units', 'metric')
-      .set('lang', 'pt_br');
+      .set('city', city)
+      .set('type', 'forecast');
 
-    return this.http.get<ForecastData>(`${this.apiUrl}/forecast`, { params }).pipe(
+    return this.http.get<ForecastData>(this.apiUrl, { params }).pipe(
       catchError(this.handleError)
     );
   }
@@ -122,21 +112,30 @@ export class WeatherService {
       // Erro do lado do cliente ou de rede
       errorMessage = `Erro: ${error.error.message}`;
     } else {
-      // Erro retornado pela API do OpenWeatherMap
-      switch (error.status) {
-        case 401:
-          errorMessage = 'Chave da API (API Key) inválida ou não informada.';
-          break;
-        case 404:
-          errorMessage = 'Cidade ou localização não encontrada.';
-          break;
-        case 500:
-        case 502:
-        case 503:
-          errorMessage = 'Servidor do OpenWeatherMap indisponível no momento.';
-          break;
-        default:
-          errorMessage = `Código do erro: ${error.status}, Mensagem: ${error.message}`;
+      // Erro retornado pelo BFF / Servidor
+      if (error.error && typeof error.error === 'object' && error.error.error) {
+        errorMessage = error.error.error;
+      } else if (error.error && typeof error.error === 'object' && error.error.message) {
+        errorMessage = error.error.message;
+      } else {
+        switch (error.status) {
+          case 400:
+            errorMessage = 'Parâmetros de busca inválidos.';
+            break;
+          case 401:
+            errorMessage = 'Erro de autenticação com a API de clima.';
+            break;
+          case 404:
+            errorMessage = 'Cidade ou localização não encontrada.';
+            break;
+          case 500:
+          case 502:
+          case 503:
+            errorMessage = 'Serviço de clima indisponível no momento.';
+            break;
+          default:
+            errorMessage = `Código do erro: ${error.status}, Mensagem: ${error.message}`;
+        }
       }
     }
     return throwError(() => new Error(errorMessage));
