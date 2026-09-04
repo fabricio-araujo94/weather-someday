@@ -1,0 +1,27 @@
+<header class="header">
+  <div class="logo-container">
+    <h1>Weather Someday</h1>
+    <span class="subtitle">Seu guia meteorológico</span>
+  </div>
+
+  <div class="search-container">
+    <input 
+      type="text" 
+      [(ngModel)]="searchCity" 
+      (keyup.enter)="onSearch()" 
+      placeholder="Pesquisar cidade..." 
+      class="search-input"
+    />
+    <button (click)="onSearch()" class="btn-search" title="Pesquisar">
+      🔍
+    </button>
+    <button (click)="onGeoClick()" class="btn-geo" title="Usar minha localização">
+      📍
+    </button>
+  </div>
+
+  <div class="clock-container">
+    <div class="time">{{ currentDate | date:'HH:mm:ss' }}</div>
+    <div class="date">{{ currentDate | date:'fullDate':'':'pt-BR' }}</div>
+  </div>
+</header>

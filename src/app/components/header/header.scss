@@ -1,0 +1,82 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1rem 2rem;
+  color: white;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  .logo-container {
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .subtitle {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+  }
+
+  .search-container {
+    display: flex;
+    gap: 0.5px;
+
+    .search-input {
+      padding: 0.5rem 1rem;
+      border-radius: 20px 0 0 20px;
+      border: none;
+      outline: none;
+      font-size: 0.9rem;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      width: 200px;
+    }
+
+    .btn-search, .btn-geo {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: #3b82f6;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-search {
+      border-radius: 0;
+    }
+
+    .btn-geo {
+      border-radius: 0 20px 20px 0;
+      background: #10b981;
+      &:hover {
+        background: #059669;
+      }
+    }
+
+    .btn-search:hover {
+      background: #2563eb;
+    }
+  }
+
+  .clock-container {
+    text-align: right;
+
+    .time {
+      font-size: 1.4rem;
+      font-weight: 600;
+      font-family: monospace;
+    }
+
+    .date {
+      font-size: 0.8rem;
+      opacity: 0.8;
+      text-transform: capitalize;
+    }
+  }
+}

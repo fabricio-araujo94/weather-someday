@@ -1,0 +1,41 @@
+@if (weatherData(); as data) {
+  <div class="current-weather-card">
+    <div class="location-info">
+      <h2>{{ data.name }}, {{ data.sys.country }}</h2>
+      <p class="description">{{ data.weather[0].description }}</p>
+    </div>
+
+    <div class="main-weather">
+      <div class="temp-section">
+        <span class="temp">{{ Math.round(data.main.temp) }}°C</span>
+        <span class="feels-like">Sensação térmica: {{ Math.round(data.main.feels_like) }}°C</span>
+      </div>
+      <div class="icon-section">
+        <img [src]="getWeatherIconUrl(data.weather[0].icon)" [alt]="data.weather[0].description">
+      </div>
+    </div>
+
+    <div class="details-grid">
+      <div class="detail-item">
+        <span class="label">Mín / Máx</span>
+        <span class="value">{{ Math.round(data.main.temp_min) }}° / {{ Math.round(data.main.temp_max) }}°</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">Umidade</span>
+        <span class="value">{{ data.main.humidity }}%</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">Vento</span>
+        <span class="value">{{ data.wind.speed }} m/s</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">Pressão</span>
+        <span class="value">{{ data.main.pressure }} hPa</span>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="loading-card">
+    <p>Carregando dados meteorológicos...</p>
+  </div>
+}

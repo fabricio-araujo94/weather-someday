@@ -1,0 +1,14 @@
+<div class="chart-container">
+  <h3>Previsão para as Próximas Horas</h3>
+  <div class="canvas-wrapper">
+    @if (forecastData()) {
+      <canvas baseChart
+        [data]="chartData"
+        [options]="chartOptions"
+        [type]="'line'">
+      </canvas>
+    } @else {
+      <p class="no-data">Carregando gráfico...</p>
+    }
+  </div>
+</div>
