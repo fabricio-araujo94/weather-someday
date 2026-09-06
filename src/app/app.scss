@@ -25,7 +25,7 @@
   flex-wrap: wrap;
 
   .error-icon {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
 
   .error-content {
@@ -34,21 +34,21 @@
 
     h4 {
       margin: 0 0 0.25rem;
-      font-size: 1.1rem;
+      font-size: 0.95rem;
       font-weight: 700;
       color: #ffffff;
     }
 
     .error-msg {
       margin: 0;
-      font-size: 0.95rem;
+  font-size: 0.8rem;
       color: #fee2e2;
     }
 
     .error-tip {
       display: block;
       margin-top: 0.4rem;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       opacity: 0.85;
 
       code {
@@ -66,7 +66,7 @@
     border: none;
     border-radius: 999px;
     padding: 0.6rem 1.25rem;
-    font-size: 0.88rem;
+    font-size: 0.8rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease;
