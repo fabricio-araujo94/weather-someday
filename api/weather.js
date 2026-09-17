@@ -1,4 +1,4 @@
-﻿module.exports = async function handler(req, res) {
+module.exports = async function handler(req, res) {
   try {
     if (req.method !== 'GET') {
       return res.status(405).json({ error: 'Método não permitido. Use GET.' });
@@ -46,9 +46,9 @@
     res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate=120');
     return res.status(200).json(data);
   } catch (err) {
+    console.error('Erro na rota serverless /api/weather:', err);
     return res.status(500).json({
-      error: 'Erro interno ao processar a requisição.',
-      details: err?.message || String(err)
+      error: 'Erro interno ao processar a requisição.'
     });
   }
 };
