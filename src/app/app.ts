@@ -1,5 +1,6 @@
-import { Component, OnInit, inject, signal, effect, Renderer2 } from '@angular/core';
+import { Component, OnInit, inject, signal, effect, Renderer2, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { forkJoin, Subscription } from 'rxjs';
 import { HeaderComponent } from './components/header/header';
 import { CurrentWeatherComponent } from './components/current-weather/current-weather';
 import { ForecastDaysComponent } from './components/forecast-days/forecast-days';
@@ -24,6 +25,8 @@ import { ForecastData } from './core/interfaces/forecast';
 export class App implements OnInit {
   private weatherService = inject(WeatherService);
   private renderer = inject(Renderer2);
+  private destroyRef = inject(DestroyRef);
+  private activeRequestSub?: Subscription;
 
   weatherData = signal<WeatherData | null>(null);
   forecastData = signal<ForecastData | null>(null);
@@ -32,6 +35,10 @@ export class App implements OnInit {
   lastSearchedCity = signal<string>('São Paulo');
 
   constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.activeRequestSub?.unsubscribe();
+    });
+
     // Dynamic theme updater
     effect(() => {
       const data = this.weatherData();
@@ -47,13 +54,14 @@ export class App implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    this.weatherService.getCurrentPosition().subscribe({
+    this.activeRequestSub?.unsubscribe();
+    this.activeRequestSub = this.weatherService.getCurrentPosition().subscribe({
       next: (position) => {
         const lat = position.coords.latitude;
         const lon = position.coords.longitude;
         this.fetchWeatherDataByCoords(lat, lon);
       },
-      error: (err) => {
+      error: () => {
         // Fallback gracefully to default city (São Paulo)
         this.loadWeatherByCity('São Paulo');
       }
@@ -64,24 +72,20 @@ export class App implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    this.weatherService.getCurrentWeatherByCoords(lat, lon).subscribe({
-      next: (data) => {
-        this.weatherData.set(data);
-        this.lastSearchedCity.set(data.name);
+    this.activeRequestSub?.unsubscribe();
+    this.activeRequestSub = forkJoin({
+      weather: this.weatherService.getCurrentWeatherByCoords(lat, lon),
+      forecast: this.weatherService.getForecastByCoords(lat, lon)
+    }).subscribe({
+      next: ({ weather, forecast }) => {
+        this.weatherData.set(weather);
+        this.forecastData.set(forecast);
+        this.lastSearchedCity.set(weather.name);
         this.isLoading.set(false);
       },
       error: (err) => {
-        this.errorMessage.set(err.message);
+        this.errorMessage.set(err.message || 'Erro ao carregar dados meteorológicos.');
         this.isLoading.set(false);
-      }
-    });
-
-    this.weatherService.getForecastByCoords(lat, lon).subscribe({
-      next: (data) => {
-        this.forecastData.set(data);
-      },
-      error: (err) => {
-        console.error('Erro ao buscar previsão:', err);
       }
     });
   }
@@ -91,23 +95,19 @@ export class App implements OnInit {
     this.errorMessage.set(null);
     this.lastSearchedCity.set(cityName);
 
-    this.weatherService.getCurrentWeatherByCity(cityName).subscribe({
-      next: (data) => {
-        this.weatherData.set(data);
+    this.activeRequestSub?.unsubscribe();
+    this.activeRequestSub = forkJoin({
+      weather: this.weatherService.getCurrentWeatherByCity(cityName),
+      forecast: this.weatherService.getForecastByCity(cityName)
+    }).subscribe({
+      next: ({ weather, forecast }) => {
+        this.weatherData.set(weather);
+        this.forecastData.set(forecast);
         this.isLoading.set(false);
       },
       error: (err) => {
-        this.errorMessage.set(err.message);
+        this.errorMessage.set(err.message || 'Erro ao carregar dados da cidade informada.');
         this.isLoading.set(false);
-      }
-    });
-
-    this.weatherService.getForecastByCity(cityName).subscribe({
-      next: (data) => {
-        this.forecastData.set(data);
-      },
-      error: (err) => {
-        console.error('Erro ao buscar previsão por cidade:', err);
       }
     });
   }
