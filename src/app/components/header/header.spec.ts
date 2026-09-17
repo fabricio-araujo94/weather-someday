@@ -1,5 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
 import { HeaderComponent } from './header';
+
+registerLocaleData(localePt, 'pt-BR');
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -7,7 +12,8 @@ describe('HeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HeaderComponent]
+      imports: [HeaderComponent],
+      providers: [{ provide: LOCALE_ID, useValue: 'pt-BR' }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeaderComponent);

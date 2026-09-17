@@ -1,10 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LOCALE_ID } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
 import { of } from 'rxjs';
+import { vi } from 'vitest';
 import { App } from './app';
 import { WeatherService } from './core/services/weather';
 import { WeatherData } from './core/interfaces/weather';
+
+registerLocaleData(localePt, 'pt-BR');
 
 describe('App', () => {
   let component: App;
@@ -49,6 +55,7 @@ describe('App', () => {
       imports: [App],
       providers: [
         { provide: WeatherService, useValue: weatherServiceMock },
+        { provide: LOCALE_ID, useValue: 'pt-BR' },
         provideHttpClient(),
         provideHttpClientTesting()
       ]
