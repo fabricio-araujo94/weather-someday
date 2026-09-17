@@ -71,21 +71,27 @@ export class CurrentWeatherComponent {
       return { sunrise: '--:--', sunset: '--:--', progressPercent: 50, isDay: true };
     }
 
-    const sunriseDate = new Date(data.sys.sunrise * 1000);
-    const sunsetDate = new Date(data.sys.sunset * 1000);
-    const now = new Date();
+    const timezoneOffsetMs = (data.timezone ?? 0) * 1000;
+    const sunriseUtcMs = data.sys.sunrise * 1000;
+    const sunsetUtcMs = data.sys.sunset * 1000;
+    const nowUtcMs = Date.now();
 
-    const formatTime = (d: Date) => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const formatCityTime = (utcTimestampMs: number) => {
+      const cityDate = new Date(utcTimestampMs + timezoneOffsetMs);
+      const hours = cityDate.getUTCHours().toString().padStart(2, '0');
+      const minutes = cityDate.getUTCMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    };
 
-    const totalDaylight = sunsetDate.getTime() - sunriseDate.getTime();
-    const elapsed = now.getTime() - sunriseDate.getTime();
-    let progress = Math.min(100, Math.max(0, (elapsed / totalDaylight) * 100));
+    const totalDaylight = sunsetUtcMs - sunriseUtcMs;
+    const elapsed = nowUtcMs - sunriseUtcMs;
+    let progress = totalDaylight > 0 ? Math.min(100, Math.max(0, (elapsed / totalDaylight) * 100)) : 0;
 
-    const isDay = now.getTime() >= sunriseDate.getTime() && now.getTime() <= sunsetDate.getTime();
+    const isDay = nowUtcMs >= sunriseUtcMs && nowUtcMs <= sunsetUtcMs;
 
     return {
-      sunrise: formatTime(sunriseDate),
-      sunset: formatTime(sunsetDate),
+      sunrise: formatCityTime(sunriseUtcMs),
+      sunset: formatCityTime(sunsetUtcMs),
       progressPercent: Math.round(progress),
       isDay
     };
