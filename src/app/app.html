@@ -19,7 +19,7 @@
       <div class="error-content">
         <h4>Ops! Algo não saiu como esperado</h4>
         <p class="error-msg">{{ errorMessage() }}</p>
-        <span class="error-tip">Dica: Verifique o nome da cidade ou sua chave em <code>src/environments/environment.ts</code>.</span>
+        <span class="error-tip">Dica: Verifique a conexão, o nome da cidade informada ou a variável de ambiente <code>OPENWEATHER_API_KEY</code>.</span>
       </div>
       <button type="button" class="btn-retry" (click)="retry()">Tentar Novamente</button>
     </div>
