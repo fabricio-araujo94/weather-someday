@@ -44,11 +44,13 @@
     </div>
   } @else {
     <div class="loading-state">
-      <div class="skeleton-row" *ngFor="let i of [1,2,3,4,5]">
-        <div class="skeleton-shimmer skeleton-name"></div>
-        <div class="skeleton-shimmer skeleton-icon"></div>
-        <div class="skeleton-shimmer skeleton-bar"></div>
-      </div>
+      @for (i of [1,2,3,4,5]; track i) {
+        <div class="skeleton-row">
+          <div class="skeleton-shimmer skeleton-name"></div>
+          <div class="skeleton-shimmer skeleton-icon"></div>
+          <div class="skeleton-shimmer skeleton-bar"></div>
+        </div>
+      }
     </div>
   }
 </section>
