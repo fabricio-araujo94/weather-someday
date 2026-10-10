@@ -4,19 +4,46 @@ module.exports = async function handler(req, res) {
       return res.status(405).json({ error: 'Método não permitido. Use GET.' });
     }
 
-    const apiKey = process.env.OPENWEATHER_API_KEY;
+    const query = req.query || {};
+    const { city, lat, lon } = query;
+    const type = query.type === undefined ? 'weather' : query.type;
+    const units = query.units === undefined ? 'metric' : query.units;
+    const lang = query.lang === undefined ? 'pt_br' : query.lang;
 
-    if (!apiKey) {
-      return res.status(500).json({
-        error: 'Configuração do servidor incompleta: OPENWEATHER_API_KEY não definida.'
+    const cityProvided = city !== undefined;
+    const coordsProvided = lat !== undefined || lon !== undefined;
+    const validCity =
+      typeof city === 'string' && city.trim().length > 0 && city.trim().length <= 100;
+    const validCoordinates =
+      typeof lat === 'string' &&
+      lat.trim().length > 0 &&
+      Number.isFinite(Number(lat)) &&
+      Number(lat) >= -90 &&
+      Number(lat) <= 90 &&
+      typeof lon === 'string' &&
+      lon.trim().length > 0 &&
+      Number.isFinite(Number(lon)) &&
+      Number(lon) >= -180 &&
+      Number(lon) <= 180;
+
+    if (
+      (cityProvided && (coordsProvided || !validCity)) ||
+      (!cityProvided && (!coordsProvided || !validCoordinates)) ||
+      !['weather', 'forecast'].includes(type) ||
+      !['metric', 'imperial', 'standard'].includes(units) ||
+      !['pt_br', 'en', 'es'].includes(lang)
+    ) {
+      return res.status(400).json({
+        error: 'Parâmetros de busca inválidos.'
       });
     }
 
-    const { city, lat, lon, type = 'weather', units = 'metric', lang = 'pt_br' } = req.query;
+    const apiKey = process.env.OPENWEATHER_API_KEY;
 
-    if (!city && (!lat || !lon)) {
-      return res.status(400).json({
-        error: 'Parâmetro obrigatório ausente. Informe "city" ou "lat" e "lon".'
+    if (!apiKey) {
+      console.error('OPENWEATHER_API_KEY não está configurada.');
+      return res.status(500).json({
+        error: 'Serviço de clima indisponível no momento.'
       });
     }
 
@@ -30,25 +57,39 @@ module.exports = async function handler(req, res) {
     });
 
     if (city) {
-      searchParams.set('q', String(city));
-    } else if (lat && lon) {
-      searchParams.set('lat', String(lat));
-      searchParams.set('lon', String(lon));
+      searchParams.set('q', city.trim());
+    } else {
+      searchParams.set('lat', lat.trim());
+      searchParams.set('lon', lon.trim());
     }
 
     const upstreamResponse = await fetch(`${baseUrl}?${searchParams.toString()}`);
-    const data = await upstreamResponse.json();
 
     if (!upstreamResponse.ok) {
-      return res.status(upstreamResponse.status).json(data);
+      const status = upstreamResponse.status === 404 ? 404 : 502;
+      const error =
+        status === 404
+          ? 'Cidade ou localização não encontrada.'
+          : 'Serviço de clima indisponível no momento.';
+      return res.status(status).json({ error });
+    }
+
+    let data;
+    try {
+      data = await upstreamResponse.json();
+    } catch {
+      console.error('Resposta inválida recebida do serviço de clima.');
+      return res.status(502).json({
+        error: 'Serviço de clima indisponível no momento.'
+      });
     }
 
     res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate=120');
     return res.status(200).json(data);
-  } catch (err) {
-    console.error('Erro na rota serverless /api/weather:', err);
+  } catch {
+    console.error('Falha ao consultar o serviço de clima.');
     return res.status(500).json({
-      error: 'Erro interno ao processar a requisição.'
+      error: 'Serviço de clima indisponível no momento.'
     });
   }
 };
