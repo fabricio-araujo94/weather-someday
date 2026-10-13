@@ -1,10 +1,21 @@
 import { Component, input, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
-import { Chart, ChartConfiguration, ChartOptions, registerables } from 'chart.js';
+import {
+  CategoryScale,
+  Chart,
+  ChartConfiguration,
+  ChartOptions,
+  Filler,
+  LineController,
+  LineElement,
+  LinearScale,
+  PointElement,
+  Tooltip
+} from 'chart.js';
 import { ForecastData } from '../../core/interfaces/forecast';
 
-Chart.register(...registerables);
+Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Filler, Tooltip);
 
 @Component({
   selector: 'app-hourly-chart',
