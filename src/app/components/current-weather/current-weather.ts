@@ -23,7 +23,7 @@ export class CurrentWeatherComponent {
     const data = this.weatherData();
     if (!data || !data.wind) return 'N';
     const deg = data.wind.deg || 0;
-    const directions = ['N', 'NE', 'E', 'SE', 'S', 'SO', 'O', 'NO'];
+    const directions = ['N', 'NE', 'L', 'SE', 'S', 'SO', 'O', 'NO'];
     const index = Math.round(deg / 45) % 8;
     return directions[index];
   });
