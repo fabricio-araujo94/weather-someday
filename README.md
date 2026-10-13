@@ -183,6 +183,8 @@ O projeto está configurado para deploy na [Vercel](https://vercel.com):
 
 A Vercel detecta automaticamente o Angular como framework e executa `ng build --configuration production`. As functions serverless em `api/` são deployadas sem configuração adicional.
 
+O arquivo `vercel.json` aplica cabeçalhos de segurança às respostas. A política de permissões mantém a geolocalização habilitada para a origem atual, usada pelo recurso de localização da aplicação. As rotas Angular estão vazias atualmente, então não é necessária uma reescrita da SPA.
+
 ## Observações
 
 - **Locale:** A aplicação está configurada para `pt-BR` (português brasileiro). Datas, números e textos são exibidos neste idioma.
