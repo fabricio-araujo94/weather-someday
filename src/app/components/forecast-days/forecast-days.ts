@@ -32,27 +32,30 @@ export class ForecastDaysComponent {
     const data = this.forecastData();
     if (!data || !data.list || data.list.length === 0) return [];
 
-    // Group items by local date YYYY-MM-DD
+    const timezoneOffsetMs = (data.city.timezone ?? 0) * 1000;
+    const dateKeyFor = (date: Date) =>
+      `${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, '0')}-${date.getUTCDate().toString().padStart(2, '0')}`;
+
     const grouped = new Map<string, ForecastItem[]>();
     for (const item of data.list) {
-      const d = new Date(item.dt * 1000);
-      const dateKey = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+      const cityDate = new Date(item.dt * 1000 + timezoneOffsetMs);
+      const dateKey = dateKeyFor(cityDate);
       if (!grouped.has(dateKey)) {
         grouped.set(dateKey, []);
       }
       grouped.get(dateKey)!.push(item);
     }
 
-    const todayStr = (() => {
-      const now = new Date();
-      return `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
-    })();
-
-    const tomorrowStr = (() => {
-      const tom = new Date();
-      tom.setDate(tom.getDate() + 1);
-      return `${tom.getFullYear()}-${(tom.getMonth() + 1).toString().padStart(2, '0')}-${tom.getDate().toString().padStart(2, '0')}`;
-    })();
+    const cityToday = new Date(Date.now() + timezoneOffsetMs);
+    const todayStr = dateKeyFor(cityToday);
+    const cityTomorrow = new Date(
+      Date.UTC(
+        cityToday.getUTCFullYear(),
+        cityToday.getUTCMonth(),
+        cityToday.getUTCDate() + 1
+      )
+    );
+    const tomorrowStr = dateKeyFor(cityTomorrow);
 
     const days: {
       date: Date;
@@ -71,12 +74,12 @@ export class ForecastDaysComponent {
     const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
     for (const [key, items] of grouped.entries()) {
-      const firstDate = new Date(items[0].dt * 1000);
-      let dayLabel = weekDays[firstDate.getDay()];
+      const firstDate = new Date(items[0].dt * 1000 + timezoneOffsetMs);
+      let dayLabel = weekDays[firstDate.getUTCDay()];
       if (key === todayStr) dayLabel = 'Hoje';
       else if (key === tomorrowStr) dayLabel = 'Amanhã';
 
-      const formattedDate = `${firstDate.getDate().toString().padStart(2, '0')} ${months[firstDate.getMonth()]}`;
+      const formattedDate = `${firstDate.getUTCDate().toString().padStart(2, '0')} ${months[firstDate.getUTCMonth()]}`;
 
       let min = Number.POSITIVE_INFINITY;
       let max = Number.NEGATIVE_INFINITY;
