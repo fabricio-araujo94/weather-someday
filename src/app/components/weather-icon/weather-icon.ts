@@ -31,7 +31,7 @@ export class WeatherIconComponent {
     if (cond.includes('nublado') || cond.includes('cloud')) return 'scattered-clouds';
     if (cond.includes('névoa') || cond.includes('nevoeiro') || cond.includes('mist') || cond.includes('fog')) return 'mist';
 
-    return 'sun';
+    return 'default';
   }
 
   get fallbackUrl(): string {

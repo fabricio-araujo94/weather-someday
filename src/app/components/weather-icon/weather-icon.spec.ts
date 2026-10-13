@@ -30,4 +30,15 @@ describe('WeatherIconComponent', () => {
     fixture.detectChanges();
     expect(component.iconCategory).toBe('rain');
   });
+
+  it('should render the OpenWeatherMap fallback for unknown icons and conditions', () => {
+    fixture.componentRef.setInput('icon', '99x');
+    fixture.componentRef.setInput('condition', 'unknown condition');
+    fixture.detectChanges();
+
+    expect(component.iconCategory).toBe('default');
+    const fallbackImage = fixture.nativeElement.querySelector('.img-fallback') as HTMLImageElement;
+    expect(fallbackImage).not.toBeNull();
+    expect(fallbackImage.src).toBe('https://openweathermap.org/img/wn/99x@4x.png');
+  });
 });
