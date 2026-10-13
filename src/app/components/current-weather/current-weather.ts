@@ -13,8 +13,6 @@ import { WeatherIconComponent } from '../weather-icon/weather-icon';
 export class CurrentWeatherComponent {
   weatherData = input<WeatherData | null>(null);
 
-  Math = Math;
-
   roundTemp(celsius: number): number {
     return Math.round(celsius);
   }

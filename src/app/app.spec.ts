@@ -5,17 +5,24 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { of } from 'rxjs';
-import { vi } from 'vitest';
 import { App } from './app';
 import { WeatherService } from './core/services/weather';
 import { WeatherData } from './core/interfaces/weather';
+import { ForecastData } from './core/interfaces/forecast';
 
 registerLocaleData(localePt, 'pt-BR');
 
 describe('App', () => {
   let component: App;
   let fixture: ComponentFixture<App>;
-  let weatherServiceMock: any;
+  let weatherServiceMock: Pick<
+    WeatherService,
+    | 'getCurrentPosition'
+    | 'getCurrentWeatherByCoords'
+    | 'getForecastByCoords'
+    | 'getCurrentWeatherByCity'
+    | 'getForecastByCity'
+  >;
 
   const mockWeatherData: WeatherData = {
     coord: { lon: -46.6333, lat: -23.5505 },
@@ -40,15 +47,45 @@ describe('App', () => {
     cod: 200
   };
 
+  const mockForecastData: ForecastData = {
+    cod: '200',
+    message: 0,
+    cnt: 0,
+    list: [],
+    city: {
+      id: 3448439,
+      name: 'São Paulo',
+      coord: { lat: -23.5505, lon: -46.6333 },
+      country: 'BR',
+      population: 0,
+      timezone: -10800,
+      sunrise: 1600000000,
+      sunset: 1600040000
+    }
+  };
+
+  const mockPosition: GeolocationPosition = {
+    coords: {
+      latitude: -23.5505,
+      longitude: -46.6333,
+      altitude: null,
+      accuracy: 1,
+      altitudeAccuracy: null,
+      heading: null,
+      speed: null,
+      toJSON: () => ({})
+    },
+    timestamp: 0,
+    toJSON: () => ({})
+  };
+
   beforeEach(async () => {
     weatherServiceMock = {
-      getCurrentPosition: vi.fn().mockReturnValue(of({
-        coords: { latitude: -23.5505, longitude: -46.6333 }
-      })),
-      getCurrentWeatherByCoords: vi.fn().mockReturnValue(of(mockWeatherData)),
-      getForecastByCoords: vi.fn().mockReturnValue(of({ list: [] })),
-      getCurrentWeatherByCity: vi.fn().mockReturnValue(of(mockWeatherData)),
-      getForecastByCity: vi.fn().mockReturnValue(of({ list: [] }))
+      getCurrentPosition: () => of(mockPosition),
+      getCurrentWeatherByCoords: () => of(mockWeatherData),
+      getForecastByCoords: () => of(mockForecastData),
+      getCurrentWeatherByCity: () => of(mockWeatherData),
+      getForecastByCity: () => of(mockForecastData)
     };
 
     await TestBed.configureTestingModule({

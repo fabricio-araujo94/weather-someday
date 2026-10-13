@@ -11,6 +11,7 @@ import {
   LineElement,
   LinearScale,
   PointElement,
+  ScriptableContext,
   Tooltip
 } from 'chart.js';
 import { ForecastData } from '../../core/interfaces/forecast';
@@ -123,7 +124,7 @@ export class HourlyChartComponent implements OnChanges {
           label: 'Temperatura (°C)',
           borderColor: '#38bdf8',
           pointBackgroundColor: '#38bdf8',
-          backgroundColor: (context: any) => {
+          backgroundColor: (context: ScriptableContext<'line'>) => {
             const ctx = context.chart.ctx;
             const gradient = ctx.createLinearGradient(0, 0, 0, 260);
             gradient.addColorStop(0, 'rgba(56, 189, 248, 0.45)');
