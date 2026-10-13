@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, effect, Renderer2, DestroyRef } from '@angular/core';
+import { Component, OnInit, inject, signal, effect, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { forkJoin, Subscription } from 'rxjs';
 import { HeaderComponent } from './components/header/header';
@@ -6,6 +6,7 @@ import { CurrentWeatherComponent } from './components/current-weather/current-we
 import { ForecastDaysComponent } from './components/forecast-days/forecast-days';
 import { HourlyChartComponent } from './components/hourly-chart/hourly-chart';
 import { WeatherService } from './core/services/weather';
+import { ThemeService } from './core/services/theme';
 import { WeatherData } from './core/interfaces/weather';
 import { ForecastData } from './core/interfaces/forecast';
 
@@ -24,7 +25,7 @@ import { ForecastData } from './core/interfaces/forecast';
 })
 export class App implements OnInit {
   private weatherService = inject(WeatherService);
-  private renderer = inject(Renderer2);
+  private themeService = inject(ThemeService);
   private destroyRef = inject(DestroyRef);
   private activeRequestSub?: Subscription;
 
@@ -42,7 +43,7 @@ export class App implements OnInit {
     // Dynamic theme updater
     effect(() => {
       const data = this.weatherData();
-      this.updateDynamicTheme(data);
+      this.themeService.updateTheme(data);
     });
   }
 
@@ -124,43 +125,4 @@ export class App implements OnInit {
     this.loadWeatherByCity(this.lastSearchedCity() || 'São Paulo');
   }
 
-  private updateDynamicTheme(data: WeatherData | null): void {
-    // Remove all previous theme classes
-    const themeClasses = [
-      'theme-clear-day',
-      'theme-clear-night',
-      'theme-clouds-day',
-      'theme-clouds-night',
-      'theme-rain',
-      'theme-thunderstorm',
-      'theme-snow',
-      'theme-mist'
-    ];
-    themeClasses.forEach(cls => this.renderer.removeClass(document.body, cls));
-
-    if (!data || !data.weather || data.weather.length === 0) {
-      this.renderer.addClass(document.body, 'theme-clouds-day');
-      return;
-    }
-
-    const iconCode = data.weather[0].icon || '01d';
-    const mainCondition = (data.weather[0].main || '').toLowerCase();
-    const isDay = iconCode.endsWith('d');
-
-    let theme = isDay ? 'theme-clear-day' : 'theme-clear-night';
-
-    if (mainCondition.includes('rain') || mainCondition.includes('drizzle')) {
-      theme = 'theme-rain';
-    } else if (mainCondition.includes('thunder')) {
-      theme = 'theme-thunderstorm';
-    } else if (mainCondition.includes('snow')) {
-      theme = 'theme-snow';
-    } else if (mainCondition.includes('mist') || mainCondition.includes('fog') || mainCondition.includes('haze')) {
-      theme = 'theme-mist';
-    } else if (mainCondition.includes('cloud')) {
-      theme = isDay ? 'theme-clouds-day' : 'theme-clouds-night';
-    }
-
-    this.renderer.addClass(document.body, theme);
-  }
 }
