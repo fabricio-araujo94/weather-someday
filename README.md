@@ -71,13 +71,23 @@ echo "OPENWEATHER_API_KEY=sua_chave_aqui" > .env.local
 
 ### Desenvolvimento
 
+Para usar a API de clima localmente, inicie o backend da Vercel e o servidor Angular em terminais separados. Configure `OPENWEATHER_API_KEY` no arquivo `.env.local` na raiz do projeto antes de iniciar o backend.
+
+Terminal 1 — backend serverless local:
+
+```bash
+npx vercel dev --listen 3000
+```
+
+Terminal 2 — frontend Angular:
+
 ```bash
 npm start
 # ou
 ng serve
 ```
 
-O servidor de desenvolvimento inicia em `http://localhost:4200/`. A aplicação recarrega automaticamente ao salvar alterações nos arquivos-fonte.
+O frontend inicia em `http://localhost:4200/`. O proxy configurado em `proxy.conf.json` encaminha as requisições `/api` para `http://localhost:3000`, onde `vercel dev` executa a função `api/weather.js`. A aplicação recarrega automaticamente ao salvar alterações nos arquivos-fonte.
 
 ### Build de Produção
 
