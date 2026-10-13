@@ -81,40 +81,47 @@ export class HourlyChartComponent implements OnChanges {
 
   private updateChart(): void {
     const data = this.forecastData();
-    if (data && data.list) {
-      const next24Hours = data.list.slice(0, 8);
-      const timezoneOffsetMs = (data.city.timezone ?? 0) * 1000;
-      
-      const labels = next24Hours.map((item, idx) => {
-        if (idx === 0) return 'Agora';
-        const cityDate = new Date(item.dt * 1000 + timezoneOffsetMs);
-        const hours = cityDate.getUTCHours().toString().padStart(2, '0');
-        const minutes = cityDate.getUTCMinutes().toString().padStart(2, '0');
-        return `${hours}:${minutes}`;
-      });
-
-      const temperatures = next24Hours.map(item => Math.round(item.main.temp));
-
+    if (!data?.list?.length) {
       this.chartData = {
-        labels: labels,
-        datasets: [
-          {
-            ...this.chartData.datasets[0],
-            data: temperatures,
-            label: 'Temperatura (°C)',
-            borderColor: '#38bdf8',
-            pointBackgroundColor: '#38bdf8',
-            backgroundColor: (context: any) => {
-              const ctx = context.chart.ctx;
-              const gradient = ctx.createLinearGradient(0, 0, 0, 260);
-              gradient.addColorStop(0, 'rgba(56, 189, 248, 0.45)');
-              gradient.addColorStop(0.7, 'rgba(56, 189, 248, 0.08)');
-              gradient.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
-              return gradient;
-            }
-          }
-        ]
+        ...this.chartData,
+        labels: [],
+        datasets: this.chartData.datasets.map(dataset => ({ ...dataset, data: [] }))
       };
+      return;
     }
+
+    const next24Hours = data.list.slice(0, 8);
+    const timezoneOffsetMs = (data.city.timezone ?? 0) * 1000;
+
+    const labels = next24Hours.map((item, idx) => {
+      if (idx === 0) return 'Agora';
+      const cityDate = new Date(item.dt * 1000 + timezoneOffsetMs);
+      const hours = cityDate.getUTCHours().toString().padStart(2, '0');
+      const minutes = cityDate.getUTCMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    });
+
+    const temperatures = next24Hours.map(item => Math.round(item.main.temp));
+
+    this.chartData = {
+      labels,
+      datasets: [
+        {
+          ...this.chartData.datasets[0],
+          data: temperatures,
+          label: 'Temperatura (°C)',
+          borderColor: '#38bdf8',
+          pointBackgroundColor: '#38bdf8',
+          backgroundColor: (context: any) => {
+            const ctx = context.chart.ctx;
+            const gradient = ctx.createLinearGradient(0, 0, 0, 260);
+            gradient.addColorStop(0, 'rgba(56, 189, 248, 0.45)');
+            gradient.addColorStop(0.7, 'rgba(56, 189, 248, 0.08)');
+            gradient.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
+            return gradient;
+          }
+        }
+      ]
+    };
   }
 }

@@ -66,5 +66,20 @@ describe('HourlyChartComponent', () => {
     fixture.detectChanges();
 
     expect(component.chartData.labels).toEqual(['Agora', '03:30']);
+    expect(component.chartData.datasets[0].data).toEqual([20, 20]);
+
+    fixture.componentRef.setInput('forecastData', null);
+    fixture.detectChanges();
+
+    expect(component.chartData.labels).toEqual([]);
+    expect(component.chartData.datasets[0].data).toEqual([]);
+
+    fixture.componentRef.setInput('forecastData', forecastData);
+    fixture.detectChanges();
+    fixture.componentRef.setInput('forecastData', { ...forecastData, list: [] });
+    fixture.detectChanges();
+
+    expect(component.chartData.labels).toEqual([]);
+    expect(component.chartData.datasets[0].data).toEqual([]);
   });
 });
