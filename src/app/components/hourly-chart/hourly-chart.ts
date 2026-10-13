@@ -83,11 +83,14 @@ export class HourlyChartComponent implements OnChanges {
     const data = this.forecastData();
     if (data && data.list) {
       const next24Hours = data.list.slice(0, 8);
+      const timezoneOffsetMs = (data.city.timezone ?? 0) * 1000;
       
       const labels = next24Hours.map((item, idx) => {
         if (idx === 0) return 'Agora';
-        const date = new Date(item.dt * 1000);
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const cityDate = new Date(item.dt * 1000 + timezoneOffsetMs);
+        const hours = cityDate.getUTCHours().toString().padStart(2, '0');
+        const minutes = cityDate.getUTCMinutes().toString().padStart(2, '0');
+        return `${hours}:${minutes}`;
       });
 
       const temperatures = next24Hours.map(item => Math.round(item.main.temp));
