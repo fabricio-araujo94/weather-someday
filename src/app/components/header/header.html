@@ -1,7 +1,7 @@
 <header class="app-header">
   <div class="header-main-bar">
     <!-- Brand / Logo -->
-    <div class="logo-container" role="banner">
+    <div class="logo-container">
       <div class="logo-icon-wrap">
         <svg viewBox="0 0 40 40" class="logo-svg">
           <defs>
@@ -38,7 +38,7 @@
           aria-label="Buscar cidade por nome"
         />
         @if (searchCity) {
-          <button type="button" class="btn-clear" (click)="clearSearch()" title="Limpar">✕</button>
+          <button type="button" class="btn-clear" (click)="clearSearch()" title="Limpar" aria-label="Limpar cidade pesquisada">✕</button>
         }
         <button type="button" (click)="onSearch()" class="btn-action-search" title="Pesquisar">
           Buscar

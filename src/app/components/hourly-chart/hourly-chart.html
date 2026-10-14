@@ -10,6 +10,8 @@
   @if (forecastData()) {
     <div class="canvas-wrapper">
       <canvas baseChart
+        role="img"
+        aria-label="Gráfico de temperaturas das próximas horas"
         [data]="chartData"
         [options]="chartOptions"
         [type]="'line'">
