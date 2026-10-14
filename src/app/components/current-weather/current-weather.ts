@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WeatherData } from '../../core/interfaces/weather';
 import { WeatherIconComponent } from '../weather-icon/weather-icon';
@@ -8,7 +8,8 @@ import { WeatherIconComponent } from '../weather-icon/weather-icon';
   standalone: true,
   imports: [CommonModule, WeatherIconComponent],
   templateUrl: './current-weather.html',
-  styleUrls: ['./current-weather.scss']
+  styleUrls: ['./current-weather.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CurrentWeatherComponent {
   weatherData = input<WeatherData | null>(null);

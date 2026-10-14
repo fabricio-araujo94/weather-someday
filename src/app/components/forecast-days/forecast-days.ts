@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ForecastData, ForecastItem } from '../../core/interfaces/forecast';
 import { WeatherIconComponent } from '../weather-icon/weather-icon';
@@ -23,7 +23,8 @@ export interface DailyForecast {
   standalone: true,
   imports: [CommonModule, WeatherIconComponent],
   templateUrl: './forecast-days.html',
-  styleUrls: ['./forecast-days.scss']
+  styleUrls: ['./forecast-days.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ForecastDaysComponent {
   forecastData = input<ForecastData | null>(null);

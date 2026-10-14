@@ -1,4 +1,4 @@
-import { Component, input, OnChanges } from '@angular/core';
+import { Component, input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import {
@@ -23,7 +23,8 @@ Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryS
   standalone: true,
   imports: [CommonModule, BaseChartDirective],
   templateUrl: './hourly-chart.html',
-  styleUrls: ['./hourly-chart.scss']
+  styleUrls: ['./hourly-chart.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HourlyChartComponent implements OnChanges {
   forecastData = input<ForecastData | null>(null);

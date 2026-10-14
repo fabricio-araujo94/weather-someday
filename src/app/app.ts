@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, effect, DestroyRef } from '@angular/core';
+import { Component, OnInit, inject, signal, effect, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { forkJoin, Subscription } from 'rxjs';
 import { HeaderComponent } from './components/header/header';
@@ -21,7 +21,8 @@ import { ForecastData } from './core/interfaces/forecast';
     HourlyChartComponent
   ],
   templateUrl: './app.html',
-  styleUrls: ['./app.scss']
+  styleUrls: ['./app.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class App implements OnInit {
   private weatherService = inject(WeatherService);

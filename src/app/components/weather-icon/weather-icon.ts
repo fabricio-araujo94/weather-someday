@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -6,7 +6,8 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './weather-icon.html',
-  styleUrls: ['./weather-icon.scss']
+  styleUrls: ['./weather-icon.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WeatherIconComponent {
   icon = input<string>('01d');
