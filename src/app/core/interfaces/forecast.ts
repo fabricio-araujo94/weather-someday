@@ -6,8 +6,8 @@ export interface ForecastItem {
     temp_min: number;
     temp_max: number;
     pressure: number;
-    sea_level: number;
-    grnd_level: number;
+    sea_level?: number;
+    grnd_level?: number;
     humidity: number;
     temp_kf: number;
   };
@@ -23,7 +23,7 @@ export interface ForecastItem {
   wind: {
     speed: number;
     deg: number;
-    gust: number;
+    gust?: number;
   };
   visibility: number;
   pop: number;
