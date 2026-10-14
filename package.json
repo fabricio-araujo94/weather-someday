@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "npm run test:api && npm run test:app",
+    "test:api": "node --test api/weather.test.js",
+    "test:app": "ng test --watch=false"
   },
   "private": true,
   "packageManager": "npm@11.19.0",
