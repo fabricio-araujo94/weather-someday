@@ -121,7 +121,7 @@ export class ForecastDaysComponent {
 
     if (sliced.length === 0) return [];
 
-    let overallMin = Math.min(...sliced.map(d => d.minTemp));
+    const overallMin = Math.min(...sliced.map(d => d.minTemp));
     let overallMax = Math.max(...sliced.map(d => d.maxTemp));
     if (overallMax === overallMin) overallMax += 1;
 

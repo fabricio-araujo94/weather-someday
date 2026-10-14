@@ -11,12 +11,12 @@ export interface ForecastItem {
     humidity: number;
     temp_kf: number;
   };
-  weather: Array<{
+  weather: {
     id: number;
     main: string;
     description: string;
     icon: string;
-  }>;
+  }[];
   clouds: {
     all: number;
   };

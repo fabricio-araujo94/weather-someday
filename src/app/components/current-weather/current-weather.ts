@@ -101,7 +101,7 @@ export class CurrentWeatherComponent implements OnInit, OnDestroy {
     };
 
     const isDay = nowUtcMs >= sunriseUtcMs && nowUtcMs <= sunsetUtcMs;
-    let progress = 50;
+    let progress: number;
 
     const DAY_MS = 24 * 60 * 60 * 1000;
 
