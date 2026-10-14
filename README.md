@@ -46,16 +46,15 @@ cd weather-someday
 npm install
 
 # 3. Crie o arquivo de ambiente para desenvolvimento
-#    O arquivo .gitignore já exclui src/environments/, então crie localmente:
+#    O arquivo .gitignore exclui src/environments/, então crie localmente:
 cat > src/environments/environment.development.ts << 'EOF'
 export const environment = {
   production: false,
-  weatherApiKey: '',
-  apiUrl: 'https://api.openweathermap.org/data/2.5'
+  apiUrl: '/api/weather'
 };
 EOF
 
-# 4. Crie o arquivo .env.local na raiz do projeto (para deploy na Vercel)
+# 4. Crie o arquivo .env.local na raiz do projeto (para desenvolvimento local com Vercel e deploy)
 echo "OPENWEATHER_API_KEY=sua_chave_aqui" > .env.local
 ```
 
@@ -65,7 +64,7 @@ echo "OPENWEATHER_API_KEY=sua_chave_aqui" > .env.local
 |---|---|---|
 | `OPENWEATHER_API_KEY` | Vercel (serverless function) | Chave de autenticação da API OpenWeatherMap |
 
-> **Nota:** A variável `weatherApiKey` nos arquivos `src/environments/environment.ts` e `environment.development.ts` está reservada para uso futuro. Atualmente, a chave é lida exclusivamente pela function serverless em `api/weather.js` via `process.env.OPENWEATHER_API_KEY`. Não exponha chaves de API no código-fonte.
+> **Nota:** A chave é lida exclusivamente pela function serverless em `api/weather.js` via `process.env.OPENWEATHER_API_KEY`. Não exponha chaves de API no código-fonte.
 
 ## Executando o Projeto
 
@@ -100,10 +99,10 @@ Os artefatos são gerados no diretório `dist/weather-someday/`. A build de prod
 ### Executar Testes
 
 ```bash
-ng test
+npm test
 ```
 
-Executa os testes unitários com o Vitest. Os arquivos de teste seguem o padrão `*.spec.ts`.
+Executa os testes da API serverless e os testes unitários Angular com o Vitest. Para executar cada conjunto separadamente, use `npm run test:api` ou `npm run test:app`. Os testes Angular seguem o padrão `*.spec.ts`.
 
 ## Estrutura do Projeto
 
