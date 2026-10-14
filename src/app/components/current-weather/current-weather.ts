@@ -1,4 +1,4 @@
-import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy, signal, inject, NgZone, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WeatherData } from '../../core/interfaces/weather';
 import { WeatherIconComponent } from '../weather-icon/weather-icon';
@@ -11,8 +11,26 @@ import { WeatherIconComponent } from '../weather-icon/weather-icon';
   styleUrls: ['./current-weather.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CurrentWeatherComponent {
+export class CurrentWeatherComponent implements OnInit, OnDestroy {
+  private ngZone = inject(NgZone);
+  private timerId?: ReturnType<typeof setInterval>;
+
   weatherData = input<WeatherData | null>(null);
+  currentTimeMs = signal<number>(Date.now());
+
+  ngOnInit(): void {
+    this.ngZone.runOutsideAngular(() => {
+      this.timerId = setInterval(() => {
+        this.currentTimeMs.set(Date.now());
+      }, 1000);
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.timerId !== undefined) {
+      clearInterval(this.timerId);
+    }
+  }
 
   roundTemp(celsius: number): number {
     return Math.round(celsius);
@@ -73,7 +91,7 @@ export class CurrentWeatherComponent {
     const timezoneOffsetMs = (data.timezone ?? 0) * 1000;
     const sunriseUtcMs = data.sys.sunrise * 1000;
     const sunsetUtcMs = data.sys.sunset * 1000;
-    const nowUtcMs = Date.now();
+    const nowUtcMs = this.currentTimeMs();
 
     const formatCityTime = (utcTimestampMs: number) => {
       const cityDate = new Date(utcTimestampMs + timezoneOffsetMs);
@@ -82,11 +100,38 @@ export class CurrentWeatherComponent {
       return `${hours}:${minutes}`;
     };
 
-    const totalDaylight = sunsetUtcMs - sunriseUtcMs;
-    const elapsed = nowUtcMs - sunriseUtcMs;
-    let progress = totalDaylight > 0 ? Math.min(100, Math.max(0, (elapsed / totalDaylight) * 100)) : 0;
-
     const isDay = nowUtcMs >= sunriseUtcMs && nowUtcMs <= sunsetUtcMs;
+    let progress = 50;
+
+    const DAY_MS = 24 * 60 * 60 * 1000;
+
+    if (isDay) {
+      const totalDaylight = sunsetUtcMs - sunriseUtcMs;
+      const elapsed = nowUtcMs - sunriseUtcMs;
+      progress = totalDaylight > 0 ? (elapsed / totalDaylight) * 100 : 0;
+    } else {
+      // Night-time calculation
+      // Case 1: Before today's sunrise (nowUtcMs < sunriseUtcMs) -> night started yesterday evening
+      // Yesterday's sunset is approximately sunsetUtcMs - DAY_MS
+      // Case 2: After today's sunset (nowUtcMs > sunsetUtcMs) -> night ends tomorrow morning
+      // Tomorrow's sunrise is approximately sunriseUtcMs + DAY_MS
+      let nightStartMs: number;
+      let nightEndMs: number;
+
+      if (nowUtcMs < sunriseUtcMs) {
+        nightStartMs = sunsetUtcMs - DAY_MS;
+        nightEndMs = sunriseUtcMs;
+      } else {
+        nightStartMs = sunsetUtcMs;
+        nightEndMs = sunriseUtcMs + DAY_MS;
+      }
+
+      const totalNight = nightEndMs - nightStartMs;
+      const elapsedNight = nowUtcMs - nightStartMs;
+      progress = totalNight > 0 ? (elapsedNight / totalNight) * 100 : 50;
+    }
+
+    progress = Math.min(100, Math.max(0, progress));
 
     return {
       sunrise: formatCityTime(sunriseUtcMs),
