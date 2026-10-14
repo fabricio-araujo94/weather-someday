@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, output, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, inject, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -7,10 +7,12 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './header.html',
-  styleUrls: ['./header.scss']
+  styleUrls: ['./header.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   currentDate = signal(new Date());
+  private ngZone = inject(NgZone);
   private timerId?: ReturnType<typeof setInterval>;
   
   searchCity = '';
@@ -19,13 +21,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
   geoClick = output<void>();
 
   ngOnInit(): void {
-    this.timerId = setInterval(() => {
-      this.currentDate.set(new Date());
-    }, 1000);
+    this.ngZone.runOutsideAngular(() => {
+      this.timerId = setInterval(() => {
+        this.currentDate.set(new Date());
+      }, 1000);
+    });
   }
 
   ngOnDestroy(): void {
-    if (this.timerId) {
+    if (this.timerId !== undefined) {
       clearInterval(this.timerId);
     }
   }
