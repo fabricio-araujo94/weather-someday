@@ -84,7 +84,7 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate=120');
+    res.setHeader('Cache-Control', 'public, max-age=180, s-maxage=600, stale-while-revalidate=120');
     return res.status(200).json(data);
   } catch {
     console.error('Falha ao consultar o serviço de clima.');

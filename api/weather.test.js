@@ -96,7 +96,7 @@ test('queries the upstream API with valid city parameters', async () => {
   assert.equal(requestedUrl.searchParams.get('units'), 'imperial');
   assert.equal(requestedUrl.searchParams.get('lang'), 'en');
   assert.equal(requestedUrl.searchParams.get('appid'), 'test-key');
-  assert.equal(res.headers['Cache-Control'], 's-maxage=600, stale-while-revalidate=120');
+  assert.equal(res.headers['Cache-Control'], 'public, max-age=180, s-maxage=600, stale-while-revalidate=120');
 });
 
 test('queries the upstream API with valid coordinate parameters', async () => {

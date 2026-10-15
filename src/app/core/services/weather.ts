@@ -1,9 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Observable, throwError, from } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, throwError, from, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { WeatherData } from '../interfaces/weather';
 import { ForecastData } from '../interfaces/forecast';
+
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +16,22 @@ import { ForecastData } from '../interfaces/forecast';
 export class WeatherService {
   private http = inject(HttpClient);
   private apiUrl = '/api/weather';
+  private cache = new Map<string, CacheEntry<unknown>>();
+  private readonly CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+  private getFromCache<T>(key: string): T | null {
+    const entry = this.cache.get(key) as CacheEntry<T> | undefined;
+    if (!entry) return null;
+    if (Date.now() - entry.timestamp > this.CACHE_TTL_MS) {
+      this.cache.delete(key);
+      return null;
+    }
+    return entry.data;
+  }
+
+  private setInCache<T>(key: string, data: T): void {
+    this.cache.set(key, { data, timestamp: Date.now() });
+  }
 
   /**
    * Obtém a localização atual do usuário via Geolocation API do navegador
@@ -53,12 +74,17 @@ export class WeatherService {
    * Busca o clima atual por coordenadas (Latitude e Longitude)
    */
   getCurrentWeatherByCoords(lat: number, lon: number): Observable<WeatherData> {
+    const cacheKey = `weather_coords_${lat.toFixed(2)}_${lon.toFixed(2)}`;
+    const cached = this.getFromCache<WeatherData>(cacheKey);
+    if (cached) return of(cached);
+
     const params = new HttpParams()
       .set('lat', lat.toString())
       .set('lon', lon.toString())
       .set('type', 'weather');
 
     return this.http.get<WeatherData>(this.apiUrl, { params }).pipe(
+      tap((data) => this.setInCache(cacheKey, data)),
       catchError(this.handleError)
     );
   }
@@ -67,12 +93,17 @@ export class WeatherService {
    * Busca a previsão do tempo (5 dias / 3 em 3 horas) por coordenadas
    */
   getForecastByCoords(lat: number, lon: number): Observable<ForecastData> {
+    const cacheKey = `forecast_coords_${lat.toFixed(2)}_${lon.toFixed(2)}`;
+    const cached = this.getFromCache<ForecastData>(cacheKey);
+    if (cached) return of(cached);
+
     const params = new HttpParams()
       .set('lat', lat.toString())
       .set('lon', lon.toString())
       .set('type', 'forecast');
 
     return this.http.get<ForecastData>(this.apiUrl, { params }).pipe(
+      tap((data) => this.setInCache(cacheKey, data)),
       catchError(this.handleError)
     );
   }
@@ -81,11 +112,17 @@ export class WeatherService {
    * Busca o clima atual por nome da cidade
    */
   getCurrentWeatherByCity(city: string): Observable<WeatherData> {
+    const normalized = city.trim().toLowerCase();
+    const cacheKey = `weather_city_${normalized}`;
+    const cached = this.getFromCache<WeatherData>(cacheKey);
+    if (cached) return of(cached);
+
     const params = new HttpParams()
       .set('city', city)
       .set('type', 'weather');
 
     return this.http.get<WeatherData>(this.apiUrl, { params }).pipe(
+      tap((data) => this.setInCache(cacheKey, data)),
       catchError(this.handleError)
     );
   }
@@ -94,11 +131,17 @@ export class WeatherService {
    * Busca a previsão do tempo por nome da cidade
    */
   getForecastByCity(city: string): Observable<ForecastData> {
+    const normalized = city.trim().toLowerCase();
+    const cacheKey = `forecast_city_${normalized}`;
+    const cached = this.getFromCache<ForecastData>(cacheKey);
+    if (cached) return of(cached);
+
     const params = new HttpParams()
       .set('city', city)
       .set('type', 'forecast');
 
     return this.http.get<ForecastData>(this.apiUrl, { params }).pipe(
+      tap((data) => this.setInCache(cacheKey, data)),
       catchError(this.handleError)
     );
   }
