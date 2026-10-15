@@ -22,9 +22,9 @@ export class WeatherService {
           reject(new Error('Geolocalização não é suportada pelo seu navegador.'));
         } else {
           navigator.geolocation.getCurrentPosition(resolve, reject, {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
+            enableHighAccuracy: false,
+            timeout: 5000,
+            maximumAge: 300000
           });
         }
       })

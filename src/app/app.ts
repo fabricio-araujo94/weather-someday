@@ -49,7 +49,10 @@ export class App implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadWeatherByGeolocation();
+    const savedCity = typeof localStorage !== 'undefined' ? localStorage.getItem('weather_last_city') : null;
+    const initialCity = savedCity || 'São Paulo';
+    this.lastSearchedCity.set(initialCity);
+    this.loadWeatherByCity(initialCity);
   }
 
   loadWeatherByGeolocation(): void {
@@ -64,8 +67,8 @@ export class App implements OnInit {
         this.fetchWeatherDataByCoords(lat, lon);
       },
       error: () => {
-        // Fallback gracefully to default city (São Paulo)
-        this.loadWeatherByCity('São Paulo');
+        // Fallback gracefully to default or last searched city
+        this.loadWeatherByCity(this.lastSearchedCity() || 'São Paulo');
       }
     });
   }
@@ -83,6 +86,9 @@ export class App implements OnInit {
         this.weatherData.set(weather);
         this.forecastData.set(forecast);
         this.lastSearchedCity.set(weather.name);
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('weather_last_city', weather.name);
+        }
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -105,6 +111,10 @@ export class App implements OnInit {
       next: ({ weather, forecast }) => {
         this.weatherData.set(weather);
         this.forecastData.set(forecast);
+        this.lastSearchedCity.set(weather.name);
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('weather_last_city', weather.name);
+        }
         this.isLoading.set(false);
       },
       error: (err) => {
