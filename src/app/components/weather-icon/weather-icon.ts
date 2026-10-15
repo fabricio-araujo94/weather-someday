@@ -14,7 +14,7 @@ export class WeatherIconComponent {
   condition = input<string>('');
   size = input<'sm' | 'md' | 'lg' | 'xl'>('md');
 
-  iconCategory = computed<string>(() => {
+  readonly categorySignal = computed<string>(() => {
     const code = (this.icon() || '').toLowerCase();
     const cond = (this.condition() || '').toLowerCase();
 
@@ -35,8 +35,16 @@ export class WeatherIconComponent {
     return 'default';
   });
 
-  fallbackUrl = computed<string>(() => {
+  readonly fallbackUrlSignal = computed<string>(() => {
     const code = this.icon() || '01d';
     return `https://openweathermap.org/img/wn/${code}@4x.png`;
   });
+
+  get iconCategory(): string {
+    return this.categorySignal();
+  }
+
+  get fallbackUrl(): string {
+    return this.fallbackUrlSignal();
+  }
 }
