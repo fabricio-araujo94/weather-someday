@@ -92,6 +92,14 @@
     flex-direction: column;
     width: 100%;
   }
+
+  .placeholder-skeleton {
+    width: 100%;
+    min-height: 340px;
+    border-radius: 28px;
+    background: var(--card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+  }
 }
 
 /* Footer */
