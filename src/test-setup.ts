@@ -2,10 +2,10 @@ class MockIntersectionObserver {
   readonly root: Element | Document | null = null;
   readonly rootMargin: string = '';
   readonly scrollMargin: string = '';
-  readonly thresholds: ReadonlyArray<number> = [];
-  observe(): void {}
-  unobserve(): void {}
-  disconnect(): void {}
+  readonly thresholds: readonly number[] = [];
+  observe(): void { /* no-op */ }
+  unobserve(): void { /* no-op */ }
+  disconnect(): void { /* no-op */ }
   takeRecords(): IntersectionObserverEntry[] {
     return [];
   }
