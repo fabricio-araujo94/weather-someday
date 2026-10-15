@@ -1,5 +1,5 @@
-<div class="weather-icon-wrapper" [ngClass]="['size-' + size(), 'type-' + iconCategory]">
-  @switch (iconCategory) {
+<div class="weather-icon-wrapper" [ngClass]="['size-' + size(), 'type-' + iconCategory()]">
+  @switch (iconCategory()) {
     @case ('sun') {
       <svg viewBox="0 0 100 100" class="svg-icon svg-sun">
         <defs>
@@ -184,7 +184,7 @@
     }
 
     @default {
-      <img [src]="fallbackUrl" [alt]="condition()" class="img-fallback" />
+      <img [src]="fallbackUrl()" [alt]="condition()" class="img-fallback" />
     }
   }
 </div>

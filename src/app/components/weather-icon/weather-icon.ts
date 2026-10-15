@@ -1,4 +1,4 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -14,7 +14,7 @@ export class WeatherIconComponent {
   condition = input<string>('');
   size = input<'sm' | 'md' | 'lg' | 'xl'>('md');
 
-  get iconCategory(): string {
+  iconCategory = computed<string>(() => {
     const code = (this.icon() || '').toLowerCase();
     const cond = (this.condition() || '').toLowerCase();
 
@@ -33,10 +33,10 @@ export class WeatherIconComponent {
     if (cond.includes('névoa') || cond.includes('nevoeiro') || cond.includes('mist') || cond.includes('fog')) return 'mist';
 
     return 'default';
-  }
+  });
 
-  get fallbackUrl(): string {
+  fallbackUrl = computed<string>(() => {
     const code = this.icon() || '01d';
     return `https://openweathermap.org/img/wn/${code}@4x.png`;
-  }
+  });
 }

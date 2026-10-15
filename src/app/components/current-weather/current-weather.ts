@@ -22,7 +22,7 @@ export class CurrentWeatherComponent implements OnInit, OnDestroy {
     this.ngZone.runOutsideAngular(() => {
       this.timerId = setInterval(() => {
         this.currentTimeMs.set(Date.now());
-      }, 1000);
+      }, 60000);
     });
   }
 
